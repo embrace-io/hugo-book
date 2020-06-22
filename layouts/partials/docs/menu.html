@@ -15,8 +15,10 @@
 {{ partial "docs/inject/menu-after" . }}
 </nav>
 
+{{ if default true .Site.Params.BookMenuReset }}
 <!-- Restore menu position as soon as possible to avoid flickering -->
 {{ $script := resources.Get "menu-reset.js" | resources.Minify }}
 {{ with $script.Content }}
   <script>{{ . | safeJS }}</script>
+{{ end }}
 {{ end }}

@@ -16,13 +16,20 @@
 {{ end -}}
 
 <!-- Theme stylesheet, you can customize scss by creating `assets/custom.scss` in your website -->
-{{- $styles := resources.Get "book.scss" | resources.ExecuteAsTemplate "book.scss" . | resources.ToCSS | resources.Minify | resources.Fingerprint }}
-<link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}">
+<style amp-custom>
+{{ $styles := resources.Get "book.scss" | resources.ExecuteAsTemplate "book.scss" . | resources.Minify | resources.ToCSS | resources.Fingerprint }}
+{{ $cssStr := $styles.Content | safeCSS }}
+{{ $cssStrReplaced := replace $cssStr "@charset \"UTF-8\"" "" }}
+{{ $cssStrReplaced | safeCSS }}
+</style>
 
-{{- if default true .Site.Params.BookSearch }}
+{{- if (default true .Site.Params.BookSearch) }}
 {{- $searchJSFile := printf "%s.search.js" .Language.Lang }}
 {{- $searchJS := resources.Get "search.js" | resources.ExecuteAsTemplate $searchJSFile . | resources.Minify | resources.Fingerprint }}
+<!-- Only show search for HTML (not AMP) output formats -->
+{{ with .AlternativeOutputFormats.Get "amp" }}
 <script defer src="{{ $searchJS.RelPermalink }}" integrity="{{ $searchJS.Data.Integrity }}"></script>
+{{ end }}
 {{ end -}}
 
 {{- if .Site.Params.BookServiceWorker }}
