@@ -1,7 +1,15 @@
 <h2 class="book-brand">
   <a href="{{ .Site.BaseURL | relLangURL }}">
+    {{ $height := .Site.Params.BookLogoHeight }}
+    {{ $width := .Site.Params.BookLogoWidth }}
     {{- with .Site.Params.BookLogo -}}
-    <amp-img src="{{ . | relURL }}" alt="Logo"></amp-img>
+    <amp-img
+      src="{{ . | relURL }}"
+      alt="Logo"
+      height="{{ $height }}"
+      width="{{ $width }}"
+      layout="responsive"
+      ></amp-img>
     {{- end -}}
     <span>{{ .Site.Title }}</span>
   </a>
